@@ -1,0 +1,13 @@
+[Unit]
+Description=Ready LED
+After=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/opt/ready_led
+ExecStart=/opt/ready_led/lua5.4 ready_led.lua
+ExecStop=/opt/ready_led/lua5.4 ready_led.lua -o
+
+[Install]
+WantedBy=multi-user.target
