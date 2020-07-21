@@ -69,7 +69,7 @@ strCfg_jonchkiFinalizer = os.path.join(
 # This is the artifact configuration file.
 strCfg_artifactConfiguration = os.path.join(
     strCfg_projectFolder,
-    'testcase.xml'
+    'artifact.xml'
 )
 
 # -
@@ -104,7 +104,7 @@ atMapping = dict(
 )
 strFilteredArtifactConfiguration = os.path.join(
     strCfg_workingFolder,
-    'testcase.xml'
+    'artifact.xml'
 )
 filter.file(
     strCfg_artifactConfiguration,
