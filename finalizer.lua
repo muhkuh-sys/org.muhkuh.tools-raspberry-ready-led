@@ -11,11 +11,30 @@ local pl = require'pl.import_into'()
 -- Copy all additional files.
 local atScripts = {
   ['local/ready_led.lua']      = '${install_base}/',
-  ['local/ready_led.service']  = '${install_base}/systemd/',
   ['${report_path}']           = '${install_base}/.jonchki/'
 }
 for strSrc, strDst in pairs(atScripts) do
   t:install(strSrc, strDst)
+end
+
+
+-- Filter the service file.
+local strFileSourcePath = 'local/ready_led.service'
+local strFileDestinationPath = '${install_base}/systemd/'
+
+local strSrcAbs = pl.path.abspath(strFileSourcePath, t.strCwd)
+local strFileDestinationPathExpanded = t:replace_template(strFileDestinationPath)
+local strFile, strError = pl.utils.readfile(strSrcAbs, false)
+if strFile==nil then
+  tLog.error('Failed to read the file "%s": %s', strSrcAbs, strError)
+  error('Failed to read the file.')
+end
+local strFilteredFile = t:replace_template(strFile)
+pl.dir.makepath(strFileDestinationPathExpanded)
+local tFileError, strError = pl.utils.writefile(pl.path.join(strFileDestinationPathExpanded, 'ready_led.service'), strFilteredFile, false)
+if tFileError==nil then
+  tLog.error('Failed to write the file "%s": %s', strFileDestinationPathExpanded, strError)
+  error('Failed to write the file.')
 end
 
 
