@@ -3,11 +3,9 @@ Description=Ready LED
 After=network.target
 
 [Service]
-Type=oneshot
-RemainAfterExit=yes
-WorkingDirectory=/opt/ready_led
-ExecStart=/opt/ready_led/lua5.4 ready_led.lua
-ExecStop=/opt/ready_led/lua5.4 ready_led.lua -o
+Type=simple
+WorkingDirectory=/opt/raspberry-ready-led-${root_artifact_version}
+ExecStart=/opt/raspberry-ready-led-${root_artifact_version}/lua5.4 ready_led.lua
 
 [Install]
 WantedBy=multi-user.target
