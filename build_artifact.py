@@ -1,12 +1,9 @@
-#! /usr/bin/python2.7
+#! /usr/bin/python3
 
 from jonchki import cli_args
-from jonchki import filter
 from jonchki import jonchkihere
-from jonchki import vcs_id
 
 import os
-import shutil
 import subprocess
 import sys
 
@@ -52,26 +49,6 @@ strCfg_jonchkiInstallationFolder = os.path.join(
     'targets'
 )
 
-strCfg_jonchkiSystemConfiguration = os.path.join(
-    strCfg_projectFolder,
-    'jonchki',
-    'jonchkisys.cfg'
-)
-strCfg_jonchkiProjectConfiguration = os.path.join(
-    strCfg_projectFolder,
-    'jonchki',
-    'jonchkicfg.xml'
-)
-strCfg_jonchkiFinalizer = os.path.join(
-    strCfg_projectFolder,
-    'finalizer.lua'
-)
-# This is the artifact configuration file.
-strCfg_artifactConfiguration = os.path.join(
-    strCfg_projectFolder,
-    'artifact.xml'
-)
-
 # -
 # --------------------------------------------------------------------------
 
@@ -79,37 +56,11 @@ strCfg_artifactConfiguration = os.path.join(
 if os.path.exists(strCfg_workingFolder) is not True:
     os.makedirs(strCfg_workingFolder)
 
-if os.path.exists(strCfg_artifactConfiguration) is not True:
-    raise Exception(
-        'The artifact configuration "%s" does not exist.' %
-        strCfg_artifactConfiguration
-    )
-
 # Install jonchki.
 strJonchki = jonchkihere.install(
     strCfg_jonchkiVersion,
     strCfg_jonchkiInstallationFolder,
     LOCAL_ARCHIVES=strCfg_jonchkiLocalArchives
-)
-
-# Try to get the VCS ID.
-strProjectVersionVcs, strProjectVersionVcsLong = vcs_id.get(
-    strCfg_projectFolder
-)
-
-# Filter the artifact configuration.
-atMapping = dict(
-    PROJECT_VERSION_VCS=strProjectVersionVcs,
-    PROJECT_VERSION_VCS_LONG=strProjectVersionVcsLong
-)
-strFilteredArtifactConfiguration = os.path.join(
-    strCfg_workingFolder,
-    'artifact.xml'
-)
-filter.file(
-    strCfg_artifactConfiguration,
-    strFilteredArtifactConfiguration,
-    atMapping
 )
 
 # Create the command line options for the selected platform.
@@ -121,9 +72,28 @@ sys.stderr.flush()
 astrArguments = [strJonchki]
 astrArguments.append('install-dependencies')
 astrArguments.extend(['-v', 'debug'])
-astrArguments.extend(['--syscfg', strCfg_jonchkiSystemConfiguration])
-astrArguments.extend(['--prjcfg', strCfg_jonchkiProjectConfiguration])
-astrArguments.extend(['--finalizer', strCfg_jonchkiFinalizer])
+astrArguments.extend(['--syscfg', os.path.join(
+    strCfg_projectFolder,
+    'jonchki',
+    'jonchkisys.cfg'
+)])
+astrArguments.extend(['--prjcfg', os.path.join(
+    strCfg_projectFolder,
+    'jonchki',
+    'jonchkicfg.xml'
+)])
+astrArguments.extend(['--prepare', os.path.join(
+    strCfg_projectFolder,
+    'prepare.lua'
+)])
+astrArguments.extend(['--finalizer', os.path.join(
+    strCfg_projectFolder,
+    'finalizer.lua'
+)])
+astrArguments.extend(['--dependency-log', os.path.join(
+    strCfg_projectFolder,
+    'dependency-log.xml'
+)])
 astrArguments.extend(astrJonchkiPlatform)
-astrArguments.append(strFilteredArtifactConfiguration)
+astrArguments.append('artifact.xml')
 sys.exit(subprocess.call(astrArguments, cwd=strCfg_workingFolder))

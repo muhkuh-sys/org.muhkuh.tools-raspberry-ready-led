@@ -1,24 +1,39 @@
 import sys
+from platform_detect import PlatformDetect
 
 
 def parse():
+    tPlatform = PlatformDetect()
+    tPlatform.detect()
+
     argc = len(sys.argv)
     if argc == 1:
         # No platform was specified on the command line.
-        # Build for the local platform in the folder 'local'.
-        strJonchkiDistributionID = None
-        strJonchkiDistributionVersion = None
-        strJonchkiCPUArchitecture = None
+        strJonchkiDistributionID = tPlatform.strHostDistributionId
+        strJonchkiDistributionVersion = tPlatform.strHostDistributionVersion
+        strJonchkiCPUArchitecture = tPlatform.strHostCpuArchitecture
 
-        # Build in the folder "local".
-        strJonchkiPlatformID = 'local'
+        if strJonchkiDistributionVersion is None:
+            strJonchkiPlatformID = '%s_%s' % (
+                strJonchkiDistributionID,
+                strJonchkiCPUArchitecture
+            )
+        else:
+            strJonchkiPlatformID = '%s_%s_%s' % (
+                strJonchkiDistributionID,
+                strJonchkiDistributionVersion,
+                strJonchkiCPUArchitecture
+            )
 
     elif argc == 3:
         # The command line has 2 arguments.
-        # This looks like a distribution ID and a CPU architecture.
+        # This looks like a windows build.
         strJonchkiDistributionID = sys.argv[1]
         strJonchkiDistributionVersion = None
         strJonchkiCPUArchitecture = sys.argv[2]
+        if strJonchkiDistributionID != 'windows':
+            raise Exception('No distribution version specified. This is only '
+                            'possible for windows and raspebrry.')
 
         strJonchkiPlatformID = '%s_%s' % (
             strJonchkiDistributionID,
@@ -46,7 +61,11 @@ def parse():
         distribution_id=strJonchkiDistributionID,
         distribution_version=strJonchkiDistributionVersion,
         cpu_architecture=strJonchkiCPUArchitecture,
-        platform_id=strJonchkiPlatformID
+        platform_id=strJonchkiPlatformID,
+        host_cpu_architecture=tPlatform.strHostCpuArchitecture,
+        host_distribution_id=tPlatform.strHostDistributionId,
+        host_distribution_version=tPlatform.strHostDistributionVersion,
+        host_standard_archive_format=tPlatform.strStandardArchiveFormat
     )
 
     return tPlatform
