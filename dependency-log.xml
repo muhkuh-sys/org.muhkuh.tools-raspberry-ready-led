@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dependency-log>
+	<dependencies>
+		<dependency group="com.github.lunarmodules" module="luasocket" artifact="lua5.4-luasocket" version="3.0.0.1"/>
+		<dependency group="com.github.mpeterv" module="argparse" artifact="argparse" version="0.6.0.2"/>
+		<dependency group="com.github.vsergeev" module="lua-periphery" artifact="lua5.4-lua-periphery" version="2.3.1.1"/>
+		<dependency group="org.lua" module="lua" artifact="lua" version="5.4.4.1"/>
+		<dependency group="org.muhkuh.tools" module="raspberry-ready-led" artifact="raspberry-ready-led" version="0.0.1"/>
+	</dependencies>
+	<build-dependencies>
+	</build-dependencies>
+</dependency-log>
