@@ -48,5 +48,5 @@ jobs:
       with:
         name: artifacts_${{ matrix.platform.distribution-id }}_${{ matrix.platform.distribution-version }}_${{ matrix.platform.cpu-architecture }}
         path: |
-          build/*.tar.gz
-          build/*.zip
+          targets/*.tar.gz
+          targets/*.zip
